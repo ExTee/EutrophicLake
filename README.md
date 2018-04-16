@@ -1,2 +1,2 @@
 # EutrophicLake
-COMP767 Final
+COMP767 - Reinforcement Learning: Final project
