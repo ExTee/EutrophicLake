@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 16 11:26:38 2018
-
-@author: Robert
-"""
-
 import gym
 from lake import LakeLoadEnv
+import matplotlib.pyplot as plt
+
+
 env = LakeLoadEnv()
 env.reset()
+rewards = [0]
+
 for i_episode in range(1):
     observation = env.reset()
     for t in range(200):
@@ -16,8 +14,12 @@ for i_episode in range(1):
         print(observation)
         action = env.action_space.sample()
         observation, reward, done, info = env.step(action)
-        print("State : {} -- Reward: {} -- {} -- {}".format(observation, reward, done, info))
+        rewards.append(rewards[-1] + reward)
+        #print("State : {} -- Reward: {} -- {} -- {}".format(observation, reward, done, info))
         if done:
             print("Episode finished after {} timesteps".format(t+1))
             break
 env.close()
+
+plt.plot(rewards)
+plt.show()
