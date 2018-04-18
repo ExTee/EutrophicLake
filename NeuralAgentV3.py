@@ -7,11 +7,11 @@ import numpy as np
 ALPHA = 0.3
 GAMMA = 0.9
 EPSILON = 0.1
+NUM_EPISODES = 10
+NUM_MOVES = 5000
+
 
 m = NeuralNetwork()
-#m.load_data('20180417193726')
-#m.train_model()
-
 
 '''
     Returns best action and Q value 
@@ -84,17 +84,20 @@ env = LakeLoadEnv()
 env.reset()
 rewards = [0]
 
-for i_episode in range(50):
+for i_episode in range(NUM_EPISODES):
+
+    batch_x = []
+    batch_y = []
+
     observation = env.reset()
 
-
-    for t in range(50):
+    for t in range(NUM_MOVES):
         env.render()
         
         S = env.state
 
         #Start with random actions
-        if(i_episode <10):
+        if(i_episode <2):
             A, _ = RandomAction(S)
         else:
             A, _ = EpsilonGreedy(S)
@@ -112,13 +115,23 @@ for i_episode in range(50):
         rewards.append(R)
         print("Action: {}".format(A))
 
+        #add to batch
+
+        temp_x = SA_vector.tolist()[0]
+        temp_y = target
+        batch_x.append(temp_x)
+        batch_y.append(temp_y)
+
         #Perform one gradient step
-        m.model.train_on_batch(SA_vector, [target])
-        
+        #m.model.train_on_batch(SA_vector, [target])
 
         if done:
             print("Episode finished after {} timesteps".format(t+1))
             break
+    print(batch_y)
+    m.model.train_on_batch(np.array(batch_x),np.array(batch_y))
+    batch_x = []
+    batch_y = []
 
 
 env.close()
