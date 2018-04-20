@@ -110,8 +110,8 @@ class LakeLoadEnv(gym.Env):
         screen_height = 400
 
 
-        Xscale = screen_width/self.mThresh
-        Yscale = screen_height/self.pThresh
+        Xscale = screen_width/self.pThresh
+        Yscale = screen_height/self.mThresh
 
         
         dotL = 5
@@ -134,8 +134,8 @@ class LakeLoadEnv(gym.Env):
         if self.state is None: return None
 
         x = self.state
-        Xpos = x[1] * Xscale # MIDDLE OF CART
-        Ypos = x[0] * Yscale
+        Xpos = x[0] * Xscale # MIDDLE OF CART
+        Ypos = x[1] * Yscale
         self.dottrans.set_translation(Xpos, Ypos)
         #self.axtrans.set_translation(screen_width/2, screen_height/2)
         
