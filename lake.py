@@ -34,6 +34,8 @@ class LakeLoadEnv(gym.Env):
         
         self.pThresh = 35
         self.mThresh = 300
+        #the max these values can achieve in our model
+        
         
         self.action_space = spaces.Discrete(12)
         # 12 actions - action 0 is do not add P, action 11 is add 12 units of P
@@ -41,7 +43,7 @@ class LakeLoadEnv(gym.Env):
         l = np.array([0,0])
         h = np.array([self.pThresh, self.mThresh])
         self.observation_space = spaces.Box(l, h )
-        #observation space is (P,mP)
+        #observation space is (P,M)
         
         self.seed()
         self.viewer = None
@@ -56,6 +58,7 @@ class LakeLoadEnv(gym.Env):
     
     def f(self,P):
         return P**self.q/ (self.pc**self.q + P**self.q)
+    #some helper functions
     
 
     
@@ -80,12 +83,12 @@ class LakeLoadEnv(gym.Env):
         #see eq 6-10
         
         self.state = (Pnext, Mnext)
-        done =  False
+        done =  (Pnext >= 7 or Mnext >= 200)
 
         if not done:
             reward = self.alpha* math.exp(z)*L - self.beta1*P - self.beta2 * P**2
         elif self.steps_beyond_done is None:
-            # Pole just fell!
+            # OOb
             self.steps_beyond_done = 0
             reward = self.alpha* math.exp(z)*L - self.beta1*P - self.beta2 * P**2
         else:
@@ -98,6 +101,7 @@ class LakeLoadEnv(gym.Env):
 
     def reset(self):
         self.state = self.np_random.uniform(low=np.array([0,0]), high=np.array([5,150]), size=(2,))
+        #pick random new state
         self.steps_beyond_done = None
         return np.array(self.state)
 
@@ -105,7 +109,7 @@ class LakeLoadEnv(gym.Env):
         screen_width = 600
         screen_height = 400
 
-        world_width = self.mThresh
+
         Xscale = screen_width/self.mThresh
         Yscale = screen_height/self.pThresh
 
@@ -118,9 +122,14 @@ class LakeLoadEnv(gym.Env):
             self.viewer = rendering.Viewer(screen_width, screen_height)
             l,r,t,b = -dotL/2, dotL/2, dotH/2, -dotH/2
             dot = rendering.FilledPolygon([(l,b), (l,t), (r,t), (r,b)])
+           # ax = rendering.Image("render.png", 600, 400)
             self.dottrans = rendering.Transform()
             dot.add_attr(self.dottrans)
+          #  self.axtrans = rendering.Transform()
+           # ax.add_attr(self.axtrans)
             self.viewer.add_geom(dot)
+         #   self.viewer.add_geom(ax)
+            
 
         if self.state is None: return None
 
@@ -128,8 +137,11 @@ class LakeLoadEnv(gym.Env):
         Xpos = x[1] * Xscale # MIDDLE OF CART
         Ypos = x[0] * Yscale
         self.dottrans.set_translation(Xpos, Ypos)
-
-        return self.viewer.render(return_rgb_array = mode=='rgb_array')
+        #self.axtrans.set_translation(screen_width/2, screen_height/2)
+        
+        
+        
+        return self.viewer.render(return_rgb_array = False)
 
     def close(self):
         if self.viewer: self.viewer.close()
