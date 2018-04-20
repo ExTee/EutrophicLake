@@ -105,6 +105,17 @@ class LakeLoadEnv(gym.Env):
         self.steps_beyond_done = None
         return np.array(self.state)
 
+    def start_at_state(self,P,M):
+        if P not in range(0,5) or M not in range(0,300):
+            print("Invalid values, please enter a value between 0 and 5, and M between 1 and 150. Start state will be randomized")
+            self.state = self.np_random.uniform(low=np.array([0, 0]), high=np.array([5, 150]), size=(2,))
+        else:
+            self.state= np.array([P,M])
+        self.steps_beyond_done = None
+        return np.array(self.state)
+
+
+
     def render(self, mode='human'):
         screen_width = 600
         screen_height = 400
