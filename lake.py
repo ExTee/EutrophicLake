@@ -32,8 +32,8 @@ class LakeLoadEnv(gym.Env):
         self.beta2 = 0.065  #loss of amenity
         #see eq 13
         
-        self.pThresh = 35
-        self.mThresh = 300
+        self.pThresh = 7
+        self.mThresh = 200
         #the max these values can achieve in our model
         
         
@@ -90,7 +90,7 @@ class LakeLoadEnv(gym.Env):
         elif self.steps_beyond_done is None:
             # OOb
             self.steps_beyond_done = 0
-            reward = self.alpha* math.exp(z)*L - self.beta1*P - self.beta2 * P**2
+            reward = -100
         else:
             if self.steps_beyond_done == 0:
                 logger.warn("You are calling 'step()' even though this environment has already returned done = True. You should always call 'reset()' once you receive 'done = True' -- any further steps are undefined behavior.")
