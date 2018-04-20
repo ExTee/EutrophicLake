@@ -116,6 +116,7 @@ class LakeLoadEnv(gym.Env):
 
 
 
+
     def render(self, mode='human'):
         screen_width = 600
         screen_height = 400
