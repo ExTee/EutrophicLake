@@ -100,7 +100,8 @@ class LakeLoadEnv(gym.Env):
         return np.array(self.state)
 
     def start_at_state(self, P, M):
-        if P not in range(0, 5) or M not in range(0, 150):
+        #if P not in range(0, 5) or M not in range(0, 150):
+        if not (0 <= P <= 5) or not (0 <= M <= 150):
             print(
                 "Invalid values, please enter a value between 0 and 5, and M between 1 and 150. Start state will be randomized")
             self.state = self.np_random.uniform(low=np.array([0, 0]), high=np.array([5, 150]), size=(2,))

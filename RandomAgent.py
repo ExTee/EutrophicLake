@@ -7,13 +7,13 @@ env = LakeLoadEnv()
 env.reset()
 rewards = [0]
 
-for i_episode in range(1):
+for i_episode in range(5):
     observation = env.reset()
-    for t in range(200):
+    for t in range(500):
         env.render()
         print(observation)
-        action = env.action_space.sample()
-        observation, reward, done, info = env.step(action)
+        #action = env.action_space.sample()
+        observation, reward, done, info = env.step(0)
         rewards.append(rewards[-1] + reward)
         #print("State : {} -- Reward: {} -- {} -- {}".format(observation, reward, done, info))
         if done:
