@@ -1,5 +1,5 @@
 import gym
-from lake import LakeLoadEnv
+from lake2 import LakeLoadEnv
 import matplotlib.pyplot as plt
 from Net import NeuralNetwork
 import numpy as np
@@ -7,12 +7,13 @@ import numpy as np
 ALPHA = 0.3
 GAMMA = 0.9                 #Discount Rate 
 EPSILON = 0.1               #Epsilon for Epsilon-Greedy
-NUM_EPISODES = 10          #Number of total episodes
-NUM_MOVES = 5000            #Number of actions performed per episode
-NUM_EXPLORATION = 2       #Number of episodes where actions are chosen randomly
+NUM_EPISODES = 20          #Number of total episodes
+NUM_MOVES = 1000            #Number of actions performed per episode
+NUM_EXPLORATION = 0       #Number of episodes where actions are chosen randomly
 
 #Our network for function approximation
 m = NeuralNetwork()
+
 
 '''
     Returns best action and Q value 
@@ -82,6 +83,9 @@ def Encode(S,A):
     return encoded
 
 def learn_Q():
+    #Load the data from our samples
+    m.load_data('20180420154626')
+    m.train_model()
 
     env = LakeLoadEnv()
     env.reset()
@@ -154,6 +158,9 @@ def learn_Q():
 '''
 def play(start_state, moves):
 
+    #load our trained model
+    m.load_model('./networks/20180420162633.h5')
+
     env = LakeLoadEnv()
     env.reset()
     rewards = [0]
@@ -191,18 +198,18 @@ def play(start_state, moves):
 
 def main():
     #Learn the environment
-    R1 = learn_Q()
+    #R1 = learn_Q()
 
     #Plot the cumulative rewards
-    plt.plot(R1)
-    plt.show()
-
-    #Random play at an arbitrary location
-    #R2 = play((0.01, 137.12), 1000)
-    #plt.plot(R2)
+    #plt.plot(R1)
     #plt.show()
 
-    m.save_model()
+    #Random play at an arbitrary location
+    R2 = play((1, 130), 100)
+    plt.plot(R2)
+    plt.show()
+
+    #m.save_model()
 
 
 if __name__ == '__main__':
