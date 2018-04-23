@@ -8,11 +8,12 @@ ALPHA = 0.3
 GAMMA = 0.9                 #Discount Rate 
 EPSILON = 0.1               #Epsilon for Epsilon-Greedy
 NUM_EPISODES = 20          #Number of total episodes
-NUM_MOVES = 1000            #Number of actions performed per episode
+NUM_MOVES = 500            #Number of actions performed per episode
 NUM_EXPLORATION = 0       #Number of episodes where actions are chosen randomly
 
 #Our network for function approximation
 m = NeuralNetwork()
+FILEOUT = ''
 
 
 '''
@@ -86,10 +87,13 @@ def learn_Q():
     #Load the data from our samples
     m.load_data('20180420154626')
     m.train_model()
+    #m.load_model('./networks/20180420162633.h5')
+    FILEOUT = m.save_model()
 
     env = LakeLoadEnv()
     env.reset()
     rewards = [0]
+    rewards_nc = [0]
 
     for i_episode in range(NUM_EPISODES):
 
@@ -127,6 +131,7 @@ def learn_Q():
             #target = R + GAMMA * Avg(S_prime)
 
             rewards.append(rewards[-1]+R)
+            rewards_nc.append(R)
             print("Action: {}".format(A))
 
             #add to batch
@@ -149,7 +154,7 @@ def learn_Q():
     env.close()
 
     #return rewards
-    return rewards
+    return rewards, rewards_nc
 
 '''
     Use the play function to play according to a specific start state
@@ -160,6 +165,8 @@ def play(start_state, moves):
 
     #load our trained model
     m.load_model('./networks/20180420162633.h5')
+    print("Loading {}".format(FILEOUT))
+    #m.load_model('./networks/20180423134758.h5')
 
     env = LakeLoadEnv()
     env.reset()
@@ -198,16 +205,39 @@ def play(start_state, moves):
 
 def main():
     #Learn the environment
-    #R1 = learn_Q()
+    Rewards_cum, Rewards = learn_Q()
 
     #Plot the cumulative rewards
-    #plt.plot(R1)
-    #plt.show()
-
+    
+    plt.figure(figsize=(14,10))
+    plt.plot(Rewards_cum)
+    plt.title('Q Learning with Function Approximation')
+    plt.xlabel('Steps')
+    plt.ylabel('Cumulative Reward')
+    plt.savefig('Q_train_Rcum.png')
+    plt.show()
+    
+    plt.figure(figsize=(14,10))
+    plt.plot(Rewards)
+    plt.title('Q Learning with Function Approximation')
+    plt.xlabel('Steps')
+    plt.ylabel('Reward at each step')
+    plt.savefig('Q_train_R.png')
+    plt.show()
+    
+    
     #Random play at an arbitrary location
     R2 = play((1, 130), 100)
+    plt.figure(figsize=(14,10))
     plt.plot(R2)
+    plt.title('Policy applied to a random starting state')
+    plt.xlabel('Steps')
+    plt.ylabel('Cumulative Reward')
+    plt.savefig('Q_test_Rcum.png')
     plt.show()
+    
+
+
 
     #m.save_model()
 

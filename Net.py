@@ -29,7 +29,7 @@ class NeuralNetwork():
 		plot_model(self.model, to_file='model.png', show_shapes=True)
 
 	def train_model(self):
-		self.model.fit(self.train_x, self.train_y,epochs=50, batch_size=200, verbose=1)
+		self.model.fit(self.train_x, self.train_y,epochs=100, batch_size=200, verbose=1)
 
 	def load_data(self, filename):
 
@@ -45,6 +45,7 @@ class NeuralNetwork():
 		timestr = time.strftime("%Y%m%d%H%M%S")
 		file_out = './networks/' + timestr + '.h5'
 		self.model.save(file_out)
+		return file_out
 
 	def load_model(self, filename):
 		self.model = load_model(filename) 
