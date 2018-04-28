@@ -16,6 +16,7 @@ m = NeuralNetwork()
 FILEOUT = ''
 
 
+
 '''
     Returns best action and Q value 
 '''

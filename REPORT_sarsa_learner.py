@@ -181,6 +181,7 @@ def play(start_state, moves):
 
 
 
+
 R1 = learn_Sarsa()
 rewards,step_reward,phase = play((1,30), 200)
 

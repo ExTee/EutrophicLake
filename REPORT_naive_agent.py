@@ -3,6 +3,7 @@ import seaborn as sns
 import gym
 from lake import LakeLoadEnv
 from matplotlib import pyplot as plt
+
 def policy(P,M):
     if P<=2:
         if M<5:
