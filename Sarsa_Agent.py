@@ -110,7 +110,7 @@ def learn_Sarsa():
         batch_y = []
 
         observation = env.reset()
-        observation = env.start_at_state(np.random.random_sample() * 5, np.random.random_sample() * 149 + 1)
+        #observation = env.start_at_state(np.random.random_sample() * 5, np.random.random_sample() * 149 + 1)
         print(env.state)
 
         for t in range(NUM_MOVES):
@@ -167,7 +167,7 @@ def learn_Sarsa():
     Use the play function to play according to a specific start state
     @ start_state   : Starting (P,M)
     @ moves         : number of moves allowed
-'''
+
 def play(start_state, moves):
 
     env = LakeLoadEnv()
@@ -203,7 +203,7 @@ def play(start_state, moves):
 
     #return rewards
     return rewards
-
+'''
 
 def main():
     #Learn the environment

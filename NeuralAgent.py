@@ -1,12 +1,13 @@
 import gym
-from lake import LakeLoadEnv
+from lake2 import LakeLoadEnv
 import matplotlib.pyplot as plt
-from train_model import NeuralNetwork
+from Net import NeuralNetwork
 import numpy as np
 
 
 m = NeuralNetwork()
-m.load_data('20180417193726')
+#m.load_data('20180420153744')
+m.load_data('20180420154626')
 m.train_model()
 
 

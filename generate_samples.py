@@ -8,11 +8,41 @@ Run this file in order
 """
 
 import gym
-from lake import LakeLoadEnv
+from lake2 import LakeLoadEnv
 import numpy as np
 import time
 
 
+def exhaustiveSampling(num_iterations):
+	env = LakeLoadEnv()
+	env.reset()
+
+	data_x = []
+	data_y = []
+
+	for P in np.linspace(0.0, env.pThresh, 35):
+		for M in np.linspace(0.0, env.mThresh, 300):
+			S = env.start_at_state( P, M)
+
+			for t in range(num_iterations):
+				env.render()
+				for A in range(12):
+					S_prime, R, done, info = env.step(A)
+
+					if (R > -100):
+						one_hot = [0]*12
+						one_hot[A] = 1
+
+						X = [S[0],S[1]] + one_hot
+						Y = [R]
+
+						data_x.append(X)
+						data_y.append(Y)
+	env.close()
+
+	return data_x,data_y
+
+		
 '''
 	Interacts with the environment randomly to gather samples
 '''
@@ -26,37 +56,37 @@ def randomPlay(num_iterations):
 	data_x = []
 	data_y = []
 
-	for i_episode in range(1):
-	    S = env.reset()
+	for i_episode in range(10000):
+		S = env.reset()
 
-	    for t in range(num_iterations):
-	        env.render()
+		for t in range(num_iterations):
+			env.render()
 
-	        A = env.action_space.sample()
+			A = env.action_space.sample()
 
-	        #one-hot encode action
-	        one_hot = [0]*12
-	        one_hot[A] = 1
-
-
-	        S_prime, R, done, info = env.step(A)
-
-	        #store the data in an array which corresponds to one entry
-	        X = [S[0],S[1]] + one_hot
-	        Y = [R]
-
-	        #append the entry to our data
-	        data_x.append(X)
-	        data_y.append(Y)
-
-	        print("S: {}	A: {}	R:{}".format(S,A,R))
+			#one-hot encode action
+			one_hot = [0]*12
+			one_hot[A] = 1
 
 
-	        S = S_prime
+			S_prime, R, done, info = env.step(A)
 
-	        if done:
-	            print("Episode finished after {} timesteps".format(t+1))
-	            break
+			#store the data in an array which corresponds to one entry
+			X = [S[0],S[1]] + one_hot
+			Y = [R]
+
+			#append the entry to our data
+			data_x.append(X)
+			data_y.append(Y)
+
+			print("S: {}	A: {}	R:{}".format(S,A,R))
+
+
+			S = S_prime
+
+			if done:
+				print("Episode finished after {} timesteps".format(t+1))
+				break
 	env.close()
 	return (data_x,data_y)
 
@@ -77,7 +107,8 @@ def saveCSV(data_x,data_y):
 
 
 def main():
-	x,y = randomPlay(2000)
+	#x,y = randomPlay(2)
+	x,y = exhaustiveSampling(1)
 	saveCSV(x,y);
 
 if __name__ == '__main__':

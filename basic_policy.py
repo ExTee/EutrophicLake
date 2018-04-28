@@ -8,6 +8,8 @@ Created on Mon Apr 16 11:26:38 2018
 import gym
 from lake import LakeLoadEnv
 from matplotlib import pyplot as plt
+import numpy as np
+
 rewards = [0]
 states= []
 
@@ -45,13 +47,14 @@ def basic_policy(P,M):
 
 env = LakeLoadEnv()
 env.start_at_state(1,50)
-for i_episode in range(1):
-    observation = env.start_at_state(0,50)
-    for t in range(2000):
+for i_episode in range(5):
+    observation = env.start_at_state(5,35)
+    for t in range(200):
 
         action = basic_policy(observation[0],observation[1])
         observation, reward, done, info = env.step(action)
-        rewards.append(reward)
+        if t>20:
+            rewards.append(rewards[-1] + reward)
         states.append(observation[0])
         print("State : {} -- Reward: {} -- {} -- {}".format(observation, reward, done, info))
         if done:
@@ -59,6 +62,7 @@ for i_episode in range(1):
             break
 env.close()
 
+print(np.mean(rewards))
 plt.plot(rewards)
 plt.show()
 plt.plot(states)
